@@ -7,5 +7,5 @@ exports.const = {
   dbModels: 'modules/*/models/*.js',
   urlResponseLimit: 100,
   totalChildProcess: 4,
-  intervalTime: 1000 // 10 seconds
+  intervalTime: 1000 // 1 second
 };
