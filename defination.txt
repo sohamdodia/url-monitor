@@ -1,0 +1,47 @@
+URL Monitoring Service:
+
+A service to monitor multiple URLs.
+Given information (URL, method, data, headers), the server should monitor the URL every second.
+By monitor means, the server should send a request and record how much time it took to get the complete response.
+
+REST Specifications
+1. POST call:
+  1. Given URL information (URL, method, data, headers), the server should return an ID. The server should start monitoring the URL at this point.
+  2. The call will be `POST /`
+2. GET call:
+  1. Using the ID, the user should be able to retrieve: 
+    1. The URL information.
+    2. The last 100 response times of the URL as an array
+    3. The 50th, 75th, 95th, and 99th percentile of the response times.
+  2. The call will be `GET /<ID>`
+3. PUT call:
+  1. Using the ID, the user should also be able to edit the URL information previously entered so as to continue monitoring using the new URL information.
+  2. The call will be `PUT /<ID>`
+4. DELETE call:
+  1. Using the ID, the user should be able to tell the server to stop monitoring the URL and delete all information for that ID including monitoring data.
+  2. The call will be `DELETE /<ID>`
+5. GET call:
+  1. If an ID is not provided, the user should be able to retrieve a list of all urls being monitored including their ID.
+  2. The call will be `GET /`
+
+
+
+Example Implementation
+1. Start monitoring a url
+  1. `POST /` { url: “www.google.com/”, data: { “a”: “b” }, method: “get” }.
+  2. Response: { success: true, _id: 12345 },
+2. Retrieve data on the url being monitored
+  1.  `GET /12345`. 
+  2. Response: { success: true, _id: 12345, responses: [100,200,150,100], 50th_percentile: 100, 75th_percentile: 150, 95th_percentile: 200, 99th_percentile: 200, url: “www.google.com/”, data: { “a”: “b” }, method: “get”, headers: {} }
+3. Edit the url being monitored
+  1. `PUT /12345` { url: “www.google.com/”, data: { “c”: “e” } }. 
+  2. Response: { success: true, _id: 12345 }
+4. Retrieve a list of all urls being monitored
+  1. `GET /`. 
+  2. Response: { urls: [{ url: “www.google.com/”, data: { “c”: “e” }, _id: 12345 , method: “get”, headers: {} } ] }
+5. Stop monitoring a url
+  1. `DELETE /12345`. 
+  2. Response: { success: true }
+6. Try retrieving data on a url that is no longer being monitored
+  1. `GET /12345`. 
+  2. Response { success: false }
